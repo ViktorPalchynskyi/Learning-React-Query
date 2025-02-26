@@ -1,10 +1,13 @@
 import classNames from 'classnames';
 import useTodoList from './useTodoList';
 import { useCreateTodo } from './useCreateTodo';
+import { useDeleteTodo } from './useDeleteTodo';
 
 export function TodoList() {
     const { error, todoItems, isLoading, cursor } = useTodoList();
     const { handleCreate, isPanding } = useCreateTodo();
+    const { handleDelete, getIspanding } =
+        useDeleteTodo();
 
     if (isLoading) {
         return <div>Loading...</div>;
@@ -26,7 +29,10 @@ export function TodoList() {
                     name="text"
                     className="rounded p-2 border border-teal-500"
                 />
-                <button disabled={isPanding} className="rounded p-2 border border-teal-500 disabled:opacity-50">
+                <button
+                    disabled={isPanding}
+                    className="rounded p-2 border border-teal-500 disabled:opacity-50 cursor-pointer"
+                >
                     Create
                 </button>
             </form>
@@ -34,10 +40,18 @@ export function TodoList() {
             <div className={classNames('flex flex-col gap-4 mt-5')}>
                 {todoItems?.map(({ id, text }) => (
                     <div
-                        className="border border-slate-300 rounded p-3"
+                        className="border border-slate-300 rounded p-3 flex justify-between"
                         key={id}
                     >
                         {text}
+                        <button
+                            disabled={getIspanding(id)}
+                            onClick={() => handleDelete(id)}
+                            className="text-rose-500 font-bold disabled:text-rose-300 cursor-pointer"
+                            type="button"
+                        >
+                            Delete
+                        </button>
                     </div>
                 ))}
             </div>

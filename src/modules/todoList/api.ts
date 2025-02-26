@@ -24,18 +24,16 @@ export type TodoDto = {
 // Прокидывай AbortSignal чтобы React Query отменял запрос, если пользователь уходил со страницы
 export const todoListApi = {
     baseKey: 'task',
-    getTodoListQueryOptions: ({ page }: { page: number }) => {
+    getTodoListQueryOptions: () => {
         return queryOptions({
-            queryKey: [todoListApi.baseKey, 'list', { page }],
+            queryKey: [todoListApi.baseKey, 'list'],
             queryFn: (meta) =>
-                jsonApiInstance<PaginatedResult<TodoDto>>(
-                    `/tasks?_page=${page}&_per_page=10`,
-                    {
-                        signal: meta.signal,
-                    }
-                ),
+                jsonApiInstance<TodoDto[]>(`/tasks`, {
+                    signal: meta.signal,
+                }),
         });
     },
+
     getTodoListInfinityQueryOptions: () => {
         return infiniteQueryOptions({
             queryKey: [todoListApi.baseKey, 'list'],
@@ -59,13 +57,14 @@ export const todoListApi = {
         });
     },
     updateTodo: (id: string, data: Partial<TodoDto>) => {
-        return jsonApiInstance<TodoDto>(`tasks/${id}`, {
+        return jsonApiInstance<TodoDto>(`/tasks/${id}`, {
             method: 'PATCH',
             json: data,
         });
     },
     deleteTodo: (id: string) => {
-        return jsonApiInstance(`tasks/${id}`, {
+        console.log('here', id)
+        return jsonApiInstance(`/tasks/${id}`, {
             method: 'DELETE',
         });
     },
