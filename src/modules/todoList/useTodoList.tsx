@@ -31,6 +31,7 @@ export default function useTodoList() {
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage,
+        refetch,
     } = useInfiniteQuery({
         ...todoListApi.getTodoListInfinityQueryOptions(),
     });
@@ -50,5 +51,6 @@ export default function useTodoList() {
         todoItems,
         isLoading,
         cursor,
+        refetch,
     };
 }

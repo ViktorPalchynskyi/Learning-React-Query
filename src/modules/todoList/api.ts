@@ -18,22 +18,27 @@ export type TodoDto = {
     id: string;
     text: string;
     done: boolean;
+    userId: string;
 };
 
 // Прокидывай AbortSignal чтобы React Query отменял запрос, если пользователь уходил со страницы
 export const todoListApi = {
+    baseKey: 'task',
     getTodoListQueryOptions: ({ page }: { page: number }) => {
         return queryOptions({
-            queryKey: ['tasks', 'list', { page }],
+            queryKey: [todoListApi.baseKey, 'list', { page }],
             queryFn: (meta) =>
-                jsonApiInstance<PaginatedResult<TodoDto>>(`/tasks?_page=${page}&_per_page=10`, {
-                    signal: meta.signal,
-                }),
+                jsonApiInstance<PaginatedResult<TodoDto>>(
+                    `/tasks?_page=${page}&_per_page=10`,
+                    {
+                        signal: meta.signal,
+                    }
+                ),
         });
     },
     getTodoListInfinityQueryOptions: () => {
         return infiniteQueryOptions({
-            queryKey: ['tasks', 'list'],
+            queryKey: [todoListApi.baseKey, 'list'],
             queryFn: (meta) =>
                 jsonApiInstance<PaginatedResult<TodoDto>>(
                     `/tasks?_page=${meta.pageParam}&_per_page=10`,
@@ -45,6 +50,23 @@ export const todoListApi = {
             getNextPageParam: (result) => result.next,
             select: (result) =>
                 result.pages.flatMap((page) => page.data),
+        });
+    },
+    createTodo: (data: TodoDto) => {
+        return jsonApiInstance<TodoDto>('/tasks', {
+            method: 'POST',
+            json: data,
+        });
+    },
+    updateTodo: (id: string, data: Partial<TodoDto>) => {
+        return jsonApiInstance<TodoDto>(`tasks/${id}`, {
+            method: 'PATCH',
+            json: data,
+        });
+    },
+    deleteTodo: (id: string) => {
+        return jsonApiInstance(`tasks/${id}`, {
+            method: 'DELETE',
         });
     },
 };
