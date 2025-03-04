@@ -31,6 +31,6 @@ export const jsonApiInstance = async <T>(
     }
 
     const data = (await result.json()) as Promise<T>;
-
+    
     return data;
 };
