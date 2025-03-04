@@ -18,7 +18,7 @@ export function useCreateTodo() {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
         const text = String(formData.get('text') ?? '');
-        console.log('text', { formData, text });
+        
         createTodoMutation.mutate({
             id: nanoid(),
             text,

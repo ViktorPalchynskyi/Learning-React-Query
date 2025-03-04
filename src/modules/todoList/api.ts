@@ -33,7 +33,6 @@ export const todoListApi = {
                 }),
         });
     },
-
     getTodoListInfinityQueryOptions: () => {
         return infiniteQueryOptions({
             queryKey: [todoListApi.baseKey, 'list'],
@@ -56,14 +55,17 @@ export const todoListApi = {
             json: data,
         });
     },
-    updateTodo: (id: string, data: Partial<TodoDto>) => {
-        return jsonApiInstance<TodoDto>(`/tasks/${id}`, {
+    updateTodo: (data: Partial<TodoDto> & { id: string }) => {
+        console.log('update', data.id);
+
+        return jsonApiInstance<TodoDto>(`/tasks/${data.id}`, {
             method: 'PATCH',
             json: data,
         });
     },
     deleteTodo: (id: string) => {
-        console.log('here', id)
+        console.log('delete', id);
+
         return jsonApiInstance(`/tasks/${id}`, {
             method: 'DELETE',
         });

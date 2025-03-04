@@ -2,12 +2,13 @@ import classNames from 'classnames';
 import useTodoList from './useTodoList';
 import { useCreateTodo } from './useCreateTodo';
 import { useDeleteTodo } from './useDeleteTodo';
+import { useToggleTodo } from './useToggleTodo';
 
 export function TodoList() {
     const { error, todoItems, isLoading, cursor } = useTodoList();
     const { handleCreate, isPanding } = useCreateTodo();
-    const { handleDelete, getIspanding } =
-        useDeleteTodo();
+    const { handleDelete, getIspanding } = useDeleteTodo();
+    const { toggleTodo } = useToggleTodo();
 
     if (isLoading) {
         return <div>Loading...</div>;
@@ -38,11 +39,18 @@ export function TodoList() {
             </form>
 
             <div className={classNames('flex flex-col gap-4 mt-5')}>
-                {todoItems?.map(({ id, text }) => (
+                {todoItems?.map(({ id, text, done }) => (
                     <div
                         className="border border-slate-300 rounded p-3 flex justify-between"
                         key={id}
                     >
+                        <input
+                            type="checkbox"
+                            className="cursor-pointer"
+                            checked={done}
+                            onChange={() => toggleTodo(id, done)}
+                        />
+
                         {text}
                         <button
                             disabled={getIspanding(id)}
